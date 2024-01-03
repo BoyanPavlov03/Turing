@@ -1,7 +1,6 @@
 s q halt
 _ 0 1
 s
-halt
 s 0 s 0 R
 s 1 s 1 R
 s _ q _ L

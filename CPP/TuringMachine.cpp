@@ -3,7 +3,7 @@
 #include <sstream>
 #include <iostream>
 
-TuringMachine::TuringMachine(Tape* tape, const std::string& fileName) : tape(tape) {
+TuringMachine::TuringMachine(const std::string& fileName) {
     std::ifstream file(fileName);
     std::string line;
 
@@ -21,14 +21,8 @@ TuringMachine::TuringMachine(Tape* tape, const std::string& fileName) : tape(tap
         alphabet.push_back(token);
     }
 
-    std::getline(file, currentState);
-
-    std::getline(file, line);
-    iss.str(line);
-    iss.clear();
-    while (std::getline(iss, token, ' ')) {
-        finalStates.push_back(token);
-    }
+    std::getline(file, startState);
+    currentState = startState;
 
     while (std::getline(file, line)) {
         std::string state, read, write, nextState;
@@ -41,14 +35,26 @@ TuringMachine::TuringMachine(Tape* tape, const std::string& fileName) : tape(tap
     std::cout << "Turing machine loaded successfully!\n";
 }
 
-void TuringMachine::run() {
-    executeUntilStopState();
-    clearEmptyTapeNodesAtTheEnd();
-    tape->writeToFile("../output1.txt");
-    std::cout << "Turing machine finished successfully!\n";
+void TuringMachine::run(Tape* tape) {
+    if (!checkIfTapeIsInAlphabet(tape)) {
+        std::cout << "Tape is not in alphabet!\n";
+        return;
+    }
+
+    executeUntilStopState(tape);
+    clearEmptyTapeNodesAtTheEnd(tape);
+    tape->writeToFile("../../output1.txt");
+    if (currentState == "accept")
+        std::cout << "The language representing the turing machine accepts the word from the tape!\n";
+    else if (currentState == "halt")
+        std::cout << "Turing machine finished successfully!\n";
+    else
+        std::cout << "The language representing the turing machine rejects the word from the tape!\n";
+
+    currentState = startState;
 }
 
-void TuringMachine::runTransition(Transition* transition) {
+void TuringMachine::runTransition(Transition* transition, Tape* tape) {
     tape->current->data = transition->write;
     currentState = transition->newState;
     switch (transition->command) {
@@ -69,18 +75,59 @@ void TuringMachine::runTransition(Transition* transition) {
     }
 }
 
-void TuringMachine::executeUntilStopState() {
-    while(std::find(finalStates.begin(), finalStates.end(), currentState) == finalStates.end()) {
-        Transition* transition = transitions.at(std::make_pair(currentState, tape->current->data));
-        runTransition(transition);
+void TuringMachine::executeUntilStopState(Tape* tape) {
+    Tape* workingTape = new Tape(*tape);
+
+    while(currentState != "halt" && currentState != "reject" && currentState != "accept") {
+        try {
+            Transition* transition = transitions.at(std::make_pair(currentState, workingTape->current->data));
+            runTransition(transition, workingTape);
+        } catch (std::out_of_range& e) {
+            currentState = "reject";
+        }
+    }
+
+    if (currentState == "halt") {
+        *tape = *workingTape;
     }
 }
 
-void TuringMachine::clearEmptyTapeNodesAtTheEnd() {
+void TuringMachine::clearEmptyTapeNodesAtTheEnd(Tape* tape) {
     while (tape->tail->data == "_") {
         TapeNode* temp = tape->tail;
         tape->tail = tape->tail->prev;
         tape->tail->next = nullptr;
         delete temp;
     }
+}
+
+bool TuringMachine::checkIfTapeIsInAlphabet(Tape* tape) {
+    for (TapeNode* node = tape->head; node != nullptr; node = node->next) {
+        if (std::find(alphabet.begin(), alphabet.end(), node->data) == alphabet.end()) {
+            std::cout << node->data << "\n";
+            return false;
+        }
+    }
+    return true;
+}
+
+void TuringMachine::composition(Tape* tape, TuringMachine* other) {
+    if (!checkIfTapeIsInAlphabet(tape) || !other->checkIfTapeIsInAlphabet(tape)) {
+        std::cout << "Tape is not in alphabet!\n";
+        return;
+    }
+    other->executeUntilStopState(tape);
+    run(tape);
+}
+
+void TuringMachine::runAnotherMachineBasedOnCurrentState(Tape* tape, TuringMachine* acceptor, TuringMachine* rejector) {
+    executeUntilStopState(tape);
+    if (currentState == "accept") {
+        acceptor->run(tape);
+    } else if (currentState == "reject") {
+        rejector->run(tape);
+    } else {
+        std::cout << "Turing machine is not in accept or reject state!\n";
+    }
+    currentState = startState;
 }

@@ -1,0 +1,14 @@
+a b c d accept
+_ 0 1
+a
+a 0 b x R
+a _ accept _ L
+a y d y R
+b 0 b 0 R
+b 1 c y L
+b y b y R
+c 0 c 0 L
+c y c y L
+c x a x R
+d y d y R
+d _ accept _ L

@@ -15,5 +15,7 @@ struct Tape {
     TapeNode *current;
 
     Tape(const std::string& fileName);
+    Tape(const Tape& other);
+    ~Tape();
     void writeToFile(const std::string& fileName);
 };
