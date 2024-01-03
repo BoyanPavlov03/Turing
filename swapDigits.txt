@@ -1,0 +1,10 @@
+s q halt
+_ 0 1
+s
+halt
+s 0 q 1 S
+s 1 q 0 S
+s _ halt _ S
+q 0 s 0 R
+q 1 s 1 R
+q _ s _ R
