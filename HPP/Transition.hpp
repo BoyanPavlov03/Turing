@@ -6,6 +6,7 @@ struct Transition {
     std::string newState;
     std::string write;
     Command command;
+    std::string helperMachine;
 
-    Transition(std::string newState, std::string write, Command command);
+    Transition(std::string newState, std::string write, Command command, std::string helperMachine);
 };

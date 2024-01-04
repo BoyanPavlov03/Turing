@@ -1,8 +1,10 @@
 #include "../HPP/Tape.hpp"
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
-TapeNode::TapeNode(std::string data, TapeNode* next, TapeNode* prev) : data(data), next(next), prev(prev) {}
+TapeNode::TapeNode(std::string dataForWrite, std::string tempData, TapeNode* next, TapeNode* prev)
+: dataForWrite(dataForWrite), tempData(tempData), next(next), prev(prev) {}
 
 Tape::Tape(const std::string& fileName) : head(nullptr), current(nullptr), tail(nullptr) {
     std::ifstream file(fileName);
@@ -11,7 +13,7 @@ Tape::Tape(const std::string& fileName) : head(nullptr), current(nullptr), tail(
     std::istringstream iss(line);
     std::string letter;
     while (std::getline(iss, letter, ' ')) {
-        TapeNode* newNode = new TapeNode(letter, nullptr, nullptr);
+        TapeNode* newNode = new TapeNode(letter, letter, nullptr, nullptr);
         if (head == nullptr) {
             head = newNode;
         } else {
@@ -34,7 +36,7 @@ Tape::Tape(const std::string& fileName) : head(nullptr), current(nullptr), tail(
 Tape::Tape(const Tape& other) : head(nullptr), current(nullptr), tail(nullptr) {
     TapeNode* temp = other.head;
     while (temp != nullptr) {
-        TapeNode* newNode = new TapeNode(temp->data, nullptr, nullptr);
+        TapeNode* newNode = new TapeNode(temp->dataForWrite, temp->tempData, nullptr, nullptr);
         if (head == nullptr) {
             head = newNode;
         } else {
@@ -45,29 +47,36 @@ Tape::Tape(const Tape& other) : head(nullptr), current(nullptr), tail(nullptr) {
             temp2->next = newNode;
             newNode->prev = temp2;
         }
+        if (temp->next == nullptr) tail = temp;
         temp = temp->next;
     }
     current = head;
-    tail = head;
-    while (tail->next != nullptr) {
-        tail = tail->next;
-    }
 }
 
 Tape::~Tape() {
-    while (current != nullptr) {
-        TapeNode* temp = current;
-        current = current->next;
-        delete temp;
+    TapeNode* temp = head;
+    while (temp != nullptr) {
+        TapeNode* temp2 = temp;
+        temp = temp->next;
+        delete temp2;
     }
 }
 
 void Tape::writeToFile(const std::string& fileName) {
-    std::ofstream file("/Users/boyan/Desktop/Turing/output1.txt");
+    std::ofstream file(fileName);
     TapeNode* temp = head;
     while (temp != nullptr) {
-        file << temp->data << " ";
+        file << temp->dataForWrite << " ";
         temp = temp->next;
     }
     file.close();
+}
+
+void Tape::print() {
+    TapeNode* temp = head;
+    while (temp != nullptr) {
+        std::cout << "Data for write: " << temp->dataForWrite << ", temp data: " << temp->tempData << "\n";
+        temp = temp->next;
+    }
+    std::cout << "\n";
 }

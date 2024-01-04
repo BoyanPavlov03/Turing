@@ -1,6 +1,9 @@
 s q halt
 _ 0 1
 s
+halt
+q $ q $ R
+s $ s $ R
 s 0 q 1 S
 s 1 q 0 S
 s _ halt _ S

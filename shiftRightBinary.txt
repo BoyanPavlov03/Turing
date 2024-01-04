@@ -1,0 +1,21 @@
+q0 q1 q2 q3 q4 halt
+_ 0 1
+q0
+halt
+q0 $ q0 $ R
+q1 $ q1 $ R
+q2 $ q2 $ R
+q3 $ q3 $ R
+q4 $ q4 $ R
+
+q0 0 q0 0 R
+q0 1 q0 1 R
+q0 _ q1 _ L
+
+q1 0 q2 _ R
+q1 1 q3 _ R
+q1 _ halt 0 S
+
+q2 _ q4 0 L
+q3 _ q4 1 L
+q4 _ q1 _ L

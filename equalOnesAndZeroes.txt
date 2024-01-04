@@ -1,0 +1,23 @@
+a b c d accept
+_ 0 1
+a
+accept
+a x a x R
+a 0 b x R
+a 1 c x R
+a $ a $ R
+b 0 b 0 R
+b _ accept _ S
+b x b x R
+b 1 d x L
+b $ b $ R
+c 1 c 1 R
+c _ accept _ S
+c x c x R
+c 0 d x L
+c $ c $ R
+d 0 d 0 L
+d _ accept _ S
+d 1 d 1 L
+d x d x L
+d $ a $ R

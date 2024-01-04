@@ -1,6 +1,11 @@
 a b c d accept
 _ 0 1
 a
+accept
+a $ a $ R
+b $ b $ R
+c $ c $ R
+d $ d $ R
 a 0 b x R
 a _ accept _ L
 a y d y R

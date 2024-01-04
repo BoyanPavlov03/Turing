@@ -23,15 +23,18 @@ class TuringMachine {
     std::unordered_map<std::pair<std::string, std::string>, Transition*, hash_pair> transitions;
     std::string currentState;
     std::string startState;
+    std::string stopState;
+    Tape* currentTape = nullptr;
 
-    void runTransition(Transition* transition, Tape* tape);
-    void executeUntilStopState(Tape* tape);
-    void clearEmptyTapeNodesAtTheEnd(Tape *tape);
-    bool checkIfTapeIsInAlphabet(Tape* tape);
+    void executeTransition(Transition* transition);
+    void executeTransitionsUntilStopState();
+    void clearEmptyTapeNodesAtTheEnd();
+    bool runRecognizer();
 public:
     TuringMachine(const std::string& fileName);
-    void run(Tape* tape);
-    void composition(Tape* tape, TuringMachine* other);
-    void runAnotherMachineBasedOnCurrentState(Tape* tape, TuringMachine* acceptor, TuringMachine* rejector);
-//    void runWhile(TuringMachine* predicate);
+    void setTape(Tape* tape);
+    void run();
+    void composition(TuringMachine* other);
+    void runAnotherMachineBasedOnCurrentState(TuringMachine* acceptor, TuringMachine* rejector);
+    void runWhile(TuringMachine* predicate);
 };
