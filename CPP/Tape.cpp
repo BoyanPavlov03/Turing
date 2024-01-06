@@ -6,8 +6,7 @@
 TapeNode::TapeNode(std::string dataForWrite, std::string tempData, TapeNode* next, TapeNode* prev)
 : dataForWrite(dataForWrite), tempData(tempData), next(next), prev(prev) {}
 
-Tape::Tape(const std::string& fileName) : head(nullptr), current(nullptr), tail(nullptr) {
-    std::ifstream file(fileName);
+Tape::Tape(std::ifstream file) : head(nullptr), current(nullptr), tail(nullptr) {
     std::string line;
     std::getline(file, line);
     std::istringstream iss(line);
@@ -24,7 +23,12 @@ Tape::Tape(const std::string& fileName) : head(nullptr), current(nullptr), tail(
             temp->next = newNode;
             newNode->prev = temp;
         }
+        if (head->dataForWrite != "$") {
+            delete head;
+            throw std::invalid_argument("The tape must start with $");
+        }
     }
+
     current = head;
     tail = head;
     while (tail->next != nullptr) {
@@ -66,7 +70,8 @@ void Tape::writeToFile(const std::string& fileName) {
     std::ofstream file(fileName);
     TapeNode* temp = head;
     while (temp != nullptr) {
-        file << temp->dataForWrite << " ";
+        file << temp->dataForWrite;
+        if (temp->next != nullptr) file << " ";
         temp = temp->next;
     }
     file.close();
@@ -79,4 +84,15 @@ void Tape::print() {
         temp = temp->next;
     }
     std::cout << "\n";
+}
+
+std::string Tape::toString() {
+    std::string result = "";
+    TapeNode* temp = head;
+    while (temp != nullptr) {
+        result += temp->dataForWrite;
+        if (temp->next != nullptr) result += " ";
+        temp = temp->next;
+    }
+    return result;
 }

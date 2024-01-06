@@ -15,9 +15,10 @@ struct Tape {
     TapeNode *tail;
     TapeNode *current;
 
-    Tape(const std::string& fileName);
+    Tape(std::ifstream file);
     Tape(const Tape& other);
     ~Tape();
     void writeToFile(const std::string& fileName);
     void print();
+    std::string toString();
 };

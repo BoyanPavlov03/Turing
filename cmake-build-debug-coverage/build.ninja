@@ -36,7 +36,7 @@ include CMakeFiles/rules.ninja
 #############################################
 # Logical path to working directory; prefix for absolute paths.
 
-cmake_ninja_workdir = /Users/boyan/Desktop/Turing/cmake-build-debug/
+cmake_ninja_workdir = /Users/boyan/Desktop/Turing/cmake-build-debug-coverage/
 # =============================================================================
 # Object build statements for EXECUTABLE target Turing
 
@@ -48,37 +48,37 @@ build cmake_object_order_depends_target_Turing: phony || CMakeFiles/Turing.dir
 
 build CMakeFiles/Turing.dir/main.cpp.o: CXX_COMPILER__Turing_Debug /Users/boyan/Desktop/Turing/main.cpp || cmake_object_order_depends_target_Turing
   DEP_FILE = CMakeFiles/Turing.dir/main.cpp.o.d
-  FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -fcolor-diagnostics -std=gnu++17
+  FLAGS = -fprofile-instr-generate -fcoverage-mapping -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -fcolor-diagnostics -std=gnu++17
   OBJECT_DIR = CMakeFiles/Turing.dir
   OBJECT_FILE_DIR = CMakeFiles/Turing.dir
 
 build CMakeFiles/Turing.dir/CPP/Transition.cpp.o: CXX_COMPILER__Turing_Debug /Users/boyan/Desktop/Turing/CPP/Transition.cpp || cmake_object_order_depends_target_Turing
   DEP_FILE = CMakeFiles/Turing.dir/CPP/Transition.cpp.o.d
-  FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -fcolor-diagnostics -std=gnu++17
+  FLAGS = -fprofile-instr-generate -fcoverage-mapping -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -fcolor-diagnostics -std=gnu++17
   OBJECT_DIR = CMakeFiles/Turing.dir
   OBJECT_FILE_DIR = CMakeFiles/Turing.dir/CPP
 
 build CMakeFiles/Turing.dir/CPP/Tape.cpp.o: CXX_COMPILER__Turing_Debug /Users/boyan/Desktop/Turing/CPP/Tape.cpp || cmake_object_order_depends_target_Turing
   DEP_FILE = CMakeFiles/Turing.dir/CPP/Tape.cpp.o.d
-  FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -fcolor-diagnostics -std=gnu++17
+  FLAGS = -fprofile-instr-generate -fcoverage-mapping -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -fcolor-diagnostics -std=gnu++17
   OBJECT_DIR = CMakeFiles/Turing.dir
   OBJECT_FILE_DIR = CMakeFiles/Turing.dir/CPP
 
 build CMakeFiles/Turing.dir/CPP/TuringMachine.cpp.o: CXX_COMPILER__Turing_Debug /Users/boyan/Desktop/Turing/CPP/TuringMachine.cpp || cmake_object_order_depends_target_Turing
   DEP_FILE = CMakeFiles/Turing.dir/CPP/TuringMachine.cpp.o.d
-  FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -fcolor-diagnostics -std=gnu++17
+  FLAGS = -fprofile-instr-generate -fcoverage-mapping -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -fcolor-diagnostics -std=gnu++17
   OBJECT_DIR = CMakeFiles/Turing.dir
   OBJECT_FILE_DIR = CMakeFiles/Turing.dir/CPP
 
 build CMakeFiles/Turing.dir/Tests/TapeTest.cpp.o: CXX_COMPILER__Turing_Debug /Users/boyan/Desktop/Turing/Tests/TapeTest.cpp || cmake_object_order_depends_target_Turing
   DEP_FILE = CMakeFiles/Turing.dir/Tests/TapeTest.cpp.o.d
-  FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -fcolor-diagnostics -std=gnu++17
+  FLAGS = -fprofile-instr-generate -fcoverage-mapping -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -fcolor-diagnostics -std=gnu++17
   OBJECT_DIR = CMakeFiles/Turing.dir
   OBJECT_FILE_DIR = CMakeFiles/Turing.dir/Tests
 
 build CMakeFiles/Turing.dir/Tests/TuringMachineTest.cpp.o: CXX_COMPILER__Turing_Debug /Users/boyan/Desktop/Turing/Tests/TuringMachineTest.cpp || cmake_object_order_depends_target_Turing
   DEP_FILE = CMakeFiles/Turing.dir/Tests/TuringMachineTest.cpp.o.d
-  FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -fcolor-diagnostics -std=gnu++17
+  FLAGS = -fprofile-instr-generate -fcoverage-mapping -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -fcolor-diagnostics -std=gnu++17
   OBJECT_DIR = CMakeFiles/Turing.dir
   OBJECT_FILE_DIR = CMakeFiles/Turing.dir/Tests
 
@@ -91,7 +91,7 @@ build CMakeFiles/Turing.dir/Tests/TuringMachineTest.cpp.o: CXX_COMPILER__Turing_
 # Link the executable Turing
 
 build Turing: CXX_EXECUTABLE_LINKER__Turing_Debug CMakeFiles/Turing.dir/main.cpp.o CMakeFiles/Turing.dir/CPP/Transition.cpp.o CMakeFiles/Turing.dir/CPP/Tape.cpp.o CMakeFiles/Turing.dir/CPP/TuringMachine.cpp.o CMakeFiles/Turing.dir/Tests/TapeTest.cpp.o CMakeFiles/Turing.dir/Tests/TuringMachineTest.cpp.o
-  FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5
+  FLAGS = -fprofile-instr-generate -fcoverage-mapping -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5
   OBJECT_DIR = CMakeFiles/Turing.dir
   POST_BUILD = :
   PRE_LINK = :
@@ -103,7 +103,7 @@ build Turing: CXX_EXECUTABLE_LINKER__Turing_Debug CMakeFiles/Turing.dir/main.cpp
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /Users/boyan/Desktop/Turing/cmake-build-debug && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  COMMAND = cd /Users/boyan/Desktop/Turing/cmake-build-debug-coverage && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
   DESC = No interactive CMake dialog available...
   restat = 1
 
@@ -114,7 +114,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /Users/boyan/Desktop/Turing/cmake-build-debug && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake --regenerate-during-build -S/Users/boyan/Desktop/Turing -B/Users/boyan/Desktop/Turing/cmake-build-debug
+  COMMAND = cd /Users/boyan/Desktop/Turing/cmake-build-debug-coverage && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake --regenerate-during-build -S/Users/boyan/Desktop/Turing -B/Users/boyan/Desktop/Turing/cmake-build-debug-coverage
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -130,7 +130,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # =============================================================================
 
 #############################################
-# Folder: /Users/boyan/Desktop/Turing/cmake-build-debug
+# Folder: /Users/boyan/Desktop/Turing/cmake-build-debug-coverage
 
 build all: phony Turing
 

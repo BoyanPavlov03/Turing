@@ -1,11 +1,11 @@
 #include "../HPP/TuringMachine.hpp"
-#include <fstream>
+#include "../HPP/FileOpener.hpp"
 #include <sstream>
 #include <iostream>
 
-TuringMachine::TuringMachine(const std::string& fileName) {
-    std::ifstream file(fileName);
+TuringMachine::TuringMachine(std::ifstream file) {
     std::string line;
+    std::cout << "Loading turing machine...\n";
 
     std::getline(file, line);
     std::istringstream iss(line);
@@ -38,9 +38,16 @@ TuringMachine::TuringMachine(const std::string& fileName) {
     std::cout << "Turing machine loaded successfully!\n";
 }
 
+TuringMachine::~TuringMachine() {
+    for (auto& transition : transitions) {
+        delete transition.second;
+    }
+}
+
 void TuringMachine::run() {
     executeTransitionsUntilStopState();
     clearEmptyTapeNodesAtTheEnd();
+    currentTape->current = currentTape->head;
     if (currentState == "accept")
         std::cout << "The language representing the turing machine accepts the word from the tape!\n";
     else if (currentState == "halt") {
@@ -72,7 +79,6 @@ void TuringMachine::executeTransition(Transition* transition) {
         case STAY:
             break;
     }
-
 }
 
 void TuringMachine::executeTransitionsUntilStopState() {
@@ -83,24 +89,23 @@ void TuringMachine::executeTransitionsUntilStopState() {
                                    ? currentTape->current->tempData
                                    : currentTape->current->dataForWrite;
             Transition* transition = transitions.at(std::make_pair(currentState,tapeData));
-//            if (!transition->helperMachine.empty()) {
-//                TuringMachine* helperMachine = new TuringMachine(transition->helperMachine);
-//                if (helperMachine->stopState == "accept") {
-//                    delete helperMachine;
-//                    transition->helperMachine = "";
-//                    continue;
-//                }
-//                helperMachine->setTape(currentTape);
-//                helperMachine->executeTransitionsUntilStopState();
-//                delete helperMachine;
-//                continue;
-//            }
+            if (!transition->helperMachine.empty()) {
+                TuringMachine* helperMachine = new TuringMachine(FileOpener::openFile(transition->helperMachine));
+                if (helperMachine->stopState == "accept") {
+                    delete helperMachine;
+                    transition->helperMachine = "";
+                    continue;
+                }
+                helperMachine->setTape(currentTape);
+                helperMachine->executeTransitionsUntilStopState();
+                delete helperMachine;
+                continue;
+            }
             executeTransition(transition);
         } catch (std::out_of_range& e) {
             currentState = "reject";
         }
     }
-    currentTape->current = currentTape->head;
 
     for (TapeNode* node = currentTape->head; node != nullptr; node = node->next) {
         node->tempData = node->dataForWrite;
@@ -119,14 +124,18 @@ void TuringMachine::clearEmptyTapeNodesAtTheEnd() {
 void TuringMachine::composition(TuringMachine* other) {
     other->setTape(currentTape);
     other->executeTransitionsUntilStopState();
+    currentTape->current = currentTape->head;
     run();
 }
 
 void TuringMachine::runAnotherMachineBasedOnCurrentState(TuringMachine* acceptor, TuringMachine* rejector) {
     executeTransitionsUntilStopState();
+    currentTape->current = currentTape->head;
     if (currentState == "accept") {
+        acceptor->setTape(currentTape);
         acceptor->run();
     } else if (currentState == "reject") {
+        rejector->setTape(currentTape);
         rejector->run();
     } else {
         std::cout << "Turing machine is not in accept or reject state!\n";
@@ -136,24 +145,26 @@ void TuringMachine::runAnotherMachineBasedOnCurrentState(TuringMachine* acceptor
 void TuringMachine::runWhile(TuringMachine* predicate) {
     predicate->setTape(currentTape);
     do {
-        currentTape->print();
         predicate->executeTransitionsUntilStopState();
+        currentTape->current = currentTape->head;
         if (predicate->currentState == "accept") {
             run();
         }
     } while (predicate->currentState == "accept");
-
-//    currentTape->writeToFile("/Users/boyan/Desktop/Turing/tape.txt");
+    clearEmptyTapeNodesAtTheEnd();
 }
 
 void TuringMachine::setTape(Tape* tape) {
     for (TapeNode* node = tape->head; node != nullptr; node = node->next) {
         if (node->dataForWrite == "$") continue;
         if (std::find(alphabet.begin(), alphabet.end(), node->dataForWrite) == alphabet.end()) {
-            std::cout << "Tape is not in alphabet!\n";
-            std::cout << "Tape data: " << node->dataForWrite << "\n";
+            std::cout << "Tape symbol: " << node->dataForWrite << " is not in alphabet!\n";
             return;
         }
     }
     currentTape = tape;
+}
+
+std::string TuringMachine::getCurrentState() {
+    return currentState;
 }

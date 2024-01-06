@@ -31,10 +31,12 @@ class TuringMachine {
     void clearEmptyTapeNodesAtTheEnd();
     bool runRecognizer();
 public:
-    TuringMachine(const std::string& fileName);
+    TuringMachine(std::ifstream file);
+    ~TuringMachine();
     void setTape(Tape* tape);
     void run();
     void composition(TuringMachine* other);
     void runAnotherMachineBasedOnCurrentState(TuringMachine* acceptor, TuringMachine* rejector);
     void runWhile(TuringMachine* predicate);
+    std::string getCurrentState();
 };
