@@ -152,7 +152,7 @@
 		},
 		{
 			"backtrace" : 1,
-			"path" : "HPP/FileOpener.h",
+			"path" : "HPP/FileOpener.hpp",
 			"sourceGroupIndex" : 1
 		}
 	],

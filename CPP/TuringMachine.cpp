@@ -2,6 +2,7 @@
 #include "../HPP/FileOpener.hpp"
 #include <sstream>
 #include <iostream>
+#include <queue>
 
 TuringMachine::TuringMachine(std::ifstream file) {
     std::string line;
@@ -32,15 +33,17 @@ TuringMachine::TuringMachine(std::ifstream file) {
         std::stringstream ss(line);
         std::string helperMachine;
         ss >> state >> read >> nextState >> write >> direction >> helperMachine;
-        transitions[std::make_pair(state, read)] = new Transition(nextState, write, direction == 'L' ? LEFT : direction == 'R' ? RIGHT : STAY, helperMachine);
+        transitions[std::make_pair(state, read)].push_back(new Transition(nextState, write, direction == 'L' ? LEFT : direction == 'R' ? RIGHT : STAY, helperMachine));
     }
     file.close();
     std::cout << "Turing machine loaded successfully!\n";
 }
 
 TuringMachine::~TuringMachine() {
-    for (auto& transition : transitions) {
-        delete transition.second;
+    for (auto transition : transitions) {
+        for (auto t : transition.second) {
+            delete t;
+        }
     }
 }
 
@@ -83,12 +86,19 @@ void TuringMachine::executeTransition(Transition* transition) {
 
 void TuringMachine::executeTransitionsUntilStopState() {
     currentState = startState;
-    while(currentState != "reject" && currentState != "accept" && currentState != "halt") {
+    std::queue<Transition*> transitionsToExecute;
+    std::string tapeData = stopState == "accept"
+                           ? currentTape->current->tempData
+                           : currentTape->current->dataForWrite;
+    std::vector<Transition*> currentStateTransitions = transitions.at(std::make_pair(currentState,tapeData));
+    for (auto& t : currentStateTransitions) {
+        transitionsToExecute.push(t);
+    }
+    while(!transitionsToExecute.empty()) {
         try {
-            std::string tapeData = stopState == "accept"
-                                   ? currentTape->current->tempData
-                                   : currentTape->current->dataForWrite;
-            Transition* transition = transitions.at(std::make_pair(currentState,tapeData));
+            Transition* transition = transitionsToExecute.front();
+            transitionsToExecute.pop();
+
             if (!transition->helperMachine.empty()) {
                 TuringMachine* helperMachine = new TuringMachine(FileOpener::openFile(transition->helperMachine));
                 if (helperMachine->stopState == "accept") {
@@ -99,9 +109,21 @@ void TuringMachine::executeTransitionsUntilStopState() {
                 helperMachine->setTape(currentTape);
                 helperMachine->executeTransitionsUntilStopState();
                 delete helperMachine;
-                continue;
+            } else {
+                executeTransition(transition);
             }
-            executeTransition(transition);
+
+            if (currentState == "halt" || currentState == "accept") {
+                break;
+            }
+
+            tapeData = stopState == "accept"
+                       ? currentTape->current->tempData
+                       : currentTape->current->dataForWrite;
+            currentStateTransitions = transitions.at(std::make_pair(currentState,tapeData));
+            for (auto& t : currentStateTransitions) {
+                transitionsToExecute.push(t);
+            }
         } catch (std::out_of_range& e) {
             currentState = "reject";
         }
@@ -143,14 +165,19 @@ void TuringMachine::runAnotherMachineBasedOnCurrentState(TuringMachine* acceptor
 }
 
 void TuringMachine::runWhile(TuringMachine* predicate) {
+    if (predicate->stopState != "accept") {
+        std::cout << "Predicate must be acceptor!\n";
+        return;
+    }
     predicate->setTape(currentTape);
-    do {
+    while(true) {
         predicate->executeTransitionsUntilStopState();
         currentTape->current = currentTape->head;
-        if (predicate->currentState == "accept") {
-            run();
+        if (predicate->currentState != "accept") {
+            break;
         }
-    } while (predicate->currentState == "accept");
+        run();
+    }
     clearEmptyTapeNodesAtTheEnd();
 }
 

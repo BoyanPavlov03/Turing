@@ -20,16 +20,15 @@ struct hash_pair {
 class TuringMachine {
     std::vector<std::string> states;
     std::vector<std::string> alphabet;
-    std::unordered_map<std::pair<std::string, std::string>, Transition*, hash_pair> transitions;
+    std::unordered_map<std::pair<std::string, std::string>, std::vector<Transition*>, hash_pair> transitions;
     std::string currentState;
     std::string startState;
     std::string stopState;
-    Tape* currentTape = nullptr;
+    Tape* currentTape;
 
     void executeTransition(Transition* transition);
     void executeTransitionsUntilStopState();
     void clearEmptyTapeNodesAtTheEnd();
-    bool runRecognizer();
 public:
     TuringMachine(std::ifstream file);
     ~TuringMachine();
