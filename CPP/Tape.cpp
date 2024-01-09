@@ -12,7 +12,6 @@ Tape::Tape(std::ifstream file) {
     while (std::getline(iss, letter, ' ')) {
         tapeContent.emplace_back(letter);
     }
-    index = 0;
     file.close();
 }
 
@@ -38,4 +37,10 @@ std::string Tape::toString() {
     }
     result.pop_back();
     return result;
+}
+
+void Tape::removeAllLastEmptySymbol() {
+    while (tapeContent.back() == "_") {
+        tapeContent.pop_back();
+    }
 }

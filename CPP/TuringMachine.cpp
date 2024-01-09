@@ -1,6 +1,5 @@
 #include "../HPP/TuringMachine.hpp"
 #include "../HPP/FileOpener.hpp"
-#include <sstream>
 #include <iostream>
 #include <queue>
 
@@ -12,14 +11,14 @@ TuringMachine::TuringMachine(std::ifstream file) {
     std::istringstream iss(line);
     std::string token;
     while (std::getline(iss, token, ' ')) {
-        states.push_back(token);
+        states.emplace_back(token);
     }
 
     std::getline(file, line);
     iss.str(line);
     iss.clear();
     while (std::getline(iss, token, ' ')) {
-        alphabet.push_back(token);
+        alphabet.emplace_back(token);
     }
 
     std::getline(file, startState);
@@ -33,7 +32,7 @@ TuringMachine::TuringMachine(std::ifstream file) {
         std::stringstream ss(line);
         std::string helperMachine;
         ss >> state >> read >> nextState >> write >> direction >> helperMachine;
-        transitions[std::make_pair(state, read)].push_back(new Transition(nextState, write, direction == 'L' ? LEFT : direction == 'R' ? RIGHT : STAY, helperMachine));
+        transitions[std::make_pair(state, read)].emplace_back(new Transition(nextState, write, direction == 'L' ? LEFT : direction == 'R' ? RIGHT : STAY, helperMachine));
     }
     file.close();
     std::cout << "Turing machine loaded successfully!\n";
@@ -52,111 +51,160 @@ void TuringMachine::run() {
         std::cout << "Turing machine does not have a tape to operate on!\n";
         return;
     }
-    executeTransitionsUntilStopState();
-    removeEmptySymbolsAtTheBack();
-    currentTape->index = 0;
+    if (stopState == "accept") {
+        runRecognizer(currentTape);
+        return;
+    }
+    ComputationHistoryNode* root = new ComputationHistoryNode(new Tape(*currentTape));
+    executeTransitionsUntilStopState(root);
     if (currentState == "accept")
         std::cout << "The language representing the turing machine accepts the word from the tape!\n";
     else if (currentState == "halt") {
-        currentTape->writeToFile("/Users/boyan/Desktop/Turing/tape.txt");
+        root->writeToFileAllLeafs("/Users/boyan/Desktop/Turing/tape.txt");
         std::cout << "Turing machine finished successfully!\n";
     } else
         std::cout << "The language representing the turing machine rejects the word from the tape!\n";
+
+    std::queue<ComputationHistoryNode*> nodes;
+    nodes.push(root);
+    while (!nodes.empty()) {
+        ComputationHistoryNode* node = nodes.front();
+        nodes.pop();
+        if (node->children.empty()) {
+            delete node;
+        } else {
+            for (auto& child : node->children) {
+                nodes.push(child);
+            }
+            delete node;
+        }
+    }
 }
 
-void TuringMachine::executeTransition(Transition* transition) {
-    currentTape->tapeContent.at(currentTape->index) = transition->write;
-    if (stopState == "halt") {
-        currentTape->tapeContent.at(currentTape->index) = transition->write;
+void TuringMachine::executeTransition(ComputationHistoryNode* root, Transition* transition) {
+    std::cout << "Tape: " << root->tape->toString() << "\n";
+    if (!transition->helperMachine.empty()) {
+        TuringMachine* helperMachine = new TuringMachine(FileOpener::openFile(transition->helperMachine));
+        std::string preservedState = root->currentState;
+        helperMachine->setTape(root->tape);
+        helperMachine->executeTransitionsUntilStopState(root);
+        delete helperMachine;
+        std::queue<ComputationHistoryNode*> nodes;
+        nodes.push(root);
+        while (!nodes.empty()) {
+            ComputationHistoryNode* node = nodes.front();
+            nodes.pop();
+            if (node->children.empty()) {
+                std::vector<Transition*> currentStateTransitions = transitions.at(std::make_pair(preservedState,
+                                                                                node->tape->tapeContent.at(node->tape->index)));
+                for (auto& t : currentStateTransitions) {
+                    executeTransition(node, t);
+                }
+            } else {
+                for (auto& child : node->children) {
+                    nodes.push(child);
+                }
+            }
+        }
+        return;
     }
-    currentState = transition->newState;
+    root->tape->tapeContent.at(root->tape->index) = transition->write;
     switch (transition->command) {
         case LEFT:
-            if (currentTape->index == 0)
+            if (root->tape->index == 0)
                 return;
-            currentTape->index--;
+            root->tape->index--;
             break;
         case RIGHT:
-            if (currentTape->tapeContent.size() == currentTape->index + 1) {
-                currentTape->tapeContent.emplace_back("_");
+            if (root->tape->tapeContent.size() == root->tape->index + 1) {
+                root->tape->tapeContent.emplace_back("_");
             }
-            currentTape->index++;
+            root->tape->index++;
         case STAY:
             break;
     }
-}
-
-void TuringMachine::addToQueue(std::queue<Transition*>& transitionsToExecute) {
-    std::vector<Transition*> currentStateTransitions = transitions.at(std::make_pair(currentState,
-                                                                                     currentTape->tapeContent.at(currentTape->index)));
+    ComputationHistoryNode* newNode = new ComputationHistoryNode(new Tape(*root->tape));
+    root->children.emplace_back(newNode);
+    newNode->currentState = transition->newState;
+    if (transition->newState == stopState) {
+        currentState = stopState;
+        return;
+    }
+    std::vector<Transition*> currentStateTransitions = transitions.at(std::make_pair(transition->newState,
+                                                                                     root->tape->tapeContent.at(root->tape->index)));
     for (auto& t : currentStateTransitions) {
-        transitionsToExecute.push(t);
+        executeTransition(newNode, t);
     }
 }
 
-void TuringMachine::executeTransitionsUntilStopState() {
+void TuringMachine::executeTransitionsUntilStopState(ComputationHistoryNode* root) {
     currentState = startState;
-    std::vector<std::string> tapeBackup = currentTape->tapeContent;
-    std::queue<Transition*> transitionsToExecute;
-    addToQueue(transitionsToExecute);
-    while(!transitionsToExecute.empty()) {
-        try {
-            Transition* transition = transitionsToExecute.front();
-            transitionsToExecute.pop();
-
-            if (!transition->helperMachine.empty()) {
-                TuringMachine* helperMachine = new TuringMachine(FileOpener::openFile(transition->helperMachine));
-                if (helperMachine->stopState == "accept") {
-                    delete helperMachine;
-                    transition->helperMachine = "";
-                    continue;
-                }
-                helperMachine->setTape(currentTape);
-                helperMachine->executeTransitionsUntilStopState();
-                delete helperMachine;
-            } else {
-                executeTransition(transition);
-            }
-
-            if (currentState == "halt" || currentState == "accept") {
-                break;
-            }
-
-            addToQueue(transitionsToExecute);
-        } catch (std::out_of_range& e) {
+    root->tape->index = 0;
+    try {
+        root->currentState = currentState;
+        std::vector<Transition*> currentStateTransitions = transitions.at(std::make_pair(currentState,
+                                                                                         currentTape->tapeContent.at(currentTape->index)));
+        for (auto& t : currentStateTransitions) {
+            executeTransition(root, t);
+        }
+    } catch (std::out_of_range& e) {
+        if (currentState != stopState) {
             currentState = "reject";
         }
-    }
-    if (stopState == "accept") {
-        currentTape->tapeContent = tapeBackup;
-    }
-}
-
-void TuringMachine::removeEmptySymbolsAtTheBack() {
-    while (currentTape->tapeContent.back() == "_") {
-        currentTape->tapeContent.pop_back();
     }
 }
 
 void TuringMachine::composition(TuringMachine* other) {
     other->setTape(currentTape);
-    other->executeTransitionsUntilStopState();
-    currentTape->index = 0;
-    run();
+    ComputationHistoryNode* root = new ComputationHistoryNode(new Tape(*currentTape));
+    other->executeTransitionsUntilStopState(root);
+    std::queue<ComputationHistoryNode*> nodes;
+    nodes.push(root);
+    while (!nodes.empty()) {
+        ComputationHistoryNode* node = nodes.front();
+        nodes.pop();
+        if (node->children.empty()) {
+            executeTransitionsUntilStopState(node);
+        } else {
+            for (auto& child : node->children) {
+                nodes.push(child);
+            }
+        }
+    }
+    root->writeToFileAllLeafs("/Users/boyan/Desktop/Turing/tape.txt");
 }
 
 void TuringMachine::runAnotherMachineBasedOnCurrentState(TuringMachine* acceptor, TuringMachine* rejector) {
-    executeTransitionsUntilStopState();
-    currentTape->index = 0;
-    if (currentState == "accept") {
+    if (runRecognizer(currentTape)) {
         acceptor->setTape(currentTape);
         acceptor->run();
-    } else if (currentState == "reject") {
+    } else {
         rejector->setTape(currentTape);
         rejector->run();
-    } else {
-        std::cout << "Turing machine is not in accept or reject state!\n";
     }
+}
+
+bool TuringMachine::runRecognizer(Tape* tape) {
+    ComputationHistoryNode* root = new ComputationHistoryNode(new Tape(*tape));
+    executeTransitionsUntilStopState(root);
+    std::queue<ComputationHistoryNode*> nodes;
+    nodes.push(root);
+    while (!nodes.empty()) {
+        ComputationHistoryNode* node = nodes.front();
+        nodes.pop();
+        if (node->children.empty()) {
+            if (node->currentState == "accept") {
+                currentState = "accept";
+                return true;
+            }
+        } else {
+            for (auto& child : node->children) {
+                nodes.push(child);
+            }
+        }
+        delete node;
+    }
+    return false;
 }
 
 void TuringMachine::runWhile(TuringMachine* predicate) {
@@ -164,16 +212,29 @@ void TuringMachine::runWhile(TuringMachine* predicate) {
         std::cout << "Predicate must be acceptor!\n";
         return;
     }
-    predicate->setTape(currentTape);
-    while(true) {
-        predicate->executeTransitionsUntilStopState();
-        currentTape->index = 0;
-        if (predicate->currentState != "accept") {
-            break;
-        }
-        run();
+    ComputationHistoryNode* root = new ComputationHistoryNode(new Tape(*currentTape));
+    runWhileHelper(predicate, root);
+    root->writeToFileAllLeafs("/Users/boyan/Desktop/Turing/tape.txt");
+}
+
+void TuringMachine::runWhileHelper(TuringMachine* predicate, ComputationHistoryNode* root) {
+    if (!predicate->runRecognizer(root->tape)) {
+        return;
     }
-    removeEmptySymbolsAtTheBack();
+    executeTransitionsUntilStopState(root);
+    std::queue<ComputationHistoryNode*> nodes;
+    nodes.push(root);
+    while (!nodes.empty()) {
+        ComputationHistoryNode* node = nodes.front();
+        nodes.pop();
+        if (node->children.empty()) {
+            runWhileHelper(predicate, node);
+        } else {
+            for (auto& child : node->children) {
+                nodes.push(child);
+            }
+        }
+    }
 }
 
 void TuringMachine::setTape(Tape* tape) {

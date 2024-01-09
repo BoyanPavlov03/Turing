@@ -5,6 +5,7 @@
 #include <queue>
 #include "Tape.hpp"
 #include "Transition.hpp"
+#include "ComputationHistoryNode.h"
 
 struct hash_pair {
     template <class T1, class T2>
@@ -29,10 +30,10 @@ class TuringMachine {
     std::string stopState;
     Tape* currentTape;
 
-    void executeTransition(Transition* transition);
-    void executeTransitionsUntilStopState();
-    void removeEmptySymbolsAtTheBack();
-    void addToQueue(std::queue<Transition*>& transitionsToExecute);
+    void executeTransition(ComputationHistoryNode* root, Transition* transition);
+    void executeTransitionsUntilStopState(ComputationHistoryNode* root);
+    bool runRecognizer(Tape* tape);
+    void runWhileHelper(TuringMachine* predicate, ComputationHistoryNode* root);
 public:
     TuringMachine(std::ifstream file);
     ~TuringMachine();

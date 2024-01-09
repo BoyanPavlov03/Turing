@@ -1,0 +1,13 @@
+a b c d halt
+_ 0 1 2 3
+a
+halt
+a $ a $ R
+b $ b $ R
+c $ c $ R
+d $ d $ R
+a 0 b 1 R
+a 0 c 2 R
+b 0 d 3 R
+c 0 d 3 R
+d 0 halt 1 S

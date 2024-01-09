@@ -29,6 +29,8 @@ TEST_CASE("TuringMachine::runExecutioner") {
     addOne->setTape(tape);
     addOne->run();
     CHECK(addOne->getCurrentState() == "halt");
+    delete tape;
+    tape = new Tape(FileOpener::openFile("/Users/boyan/Desktop/Turing/tape.txt"));
     CHECK(tape->toString() == "$ 0 1 0 0");
     delete tape;
     delete addOne;
@@ -40,6 +42,8 @@ TEST_CASE("TuringMachine::runExecutionerWithHelperMachine") {
     addOne->setTape(tape);
     addOne->run();
     CHECK(addOne->getCurrentState() == "halt");
+    delete tape;
+    tape = new Tape(FileOpener::openFile("/Users/boyan/Desktop/Turing/tape.txt"));
     CHECK(tape->toString() == "$ 1 0 0 0");
     delete tape;
     delete addOne;
@@ -51,6 +55,8 @@ TEST_CASE("TuringMachine::composition") {
     TuringMachine* addOne = new TuringMachine(FileOpener::openFile("/Users/boyan/Desktop/Turing/addOne.txt"));
     swapDigits->setTape(tape);
     swapDigits->composition(addOne);
+    delete tape;
+    tape = new Tape(FileOpener::openFile("/Users/boyan/Desktop/Turing/tape.txt"));
     CHECK(tape->toString() == "$ 1 0 1 1");
     delete tape;
     delete swapDigits;
@@ -64,6 +70,8 @@ TEST_CASE("TuringMachine::runWhile") {
     notEqualOnesAndZeroes->setTape(tape);
     shiftRightBinary->setTape(tape);
     shiftRightBinary->runWhile(notEqualOnesAndZeroes);
+    delete tape;
+    tape = new Tape(FileOpener::openFile("/Users/boyan/Desktop/Turing/tape.txt"));
     CHECK(tape->toString() == "$ 0 0 0 1 1 1");
     delete tape;
     delete notEqualOnesAndZeroes;
@@ -77,6 +85,8 @@ TEST_CASE("TuringMachine::runAnotherMachineBasedOnCurrentStateIfTrue") {
     TuringMachine* swapDigits = new TuringMachine(FileOpener::openFile("/Users/boyan/Desktop/Turing/swapDigits.txt"));
     recognizer->setTape(tape);
     recognizer->runAnotherMachineBasedOnCurrentState(addOne, swapDigits);
+    delete tape;
+    tape = new Tape(FileOpener::openFile("/Users/boyan/Desktop/Turing/tape.txt"));
     CHECK(tape->toString() == "$ 0 1 0 0");
     delete tape;
     delete recognizer;
@@ -91,9 +101,23 @@ TEST_CASE("TuringMachine::runAnotherMachineBasedOnCurrentStateIfFalse") {
     TuringMachine* swapDigits = new TuringMachine(FileOpener::openFile("/Users/boyan/Desktop/Turing/swapDigits.txt"));
     recognizer->setTape(tape);
     recognizer->runAnotherMachineBasedOnCurrentState(addOne, swapDigits);
+    delete tape;
+    tape = new Tape(FileOpener::openFile("/Users/boyan/Desktop/Turing/tape.txt"));
     CHECK(tape->toString() == "$ 1 1 0");
     delete tape;
     delete recognizer;
     delete addOne;
     delete swapDigits;
+}
+
+TEST_CASE("TuringMachine::nondeterministicExample") {
+    Tape* tape = new Tape(FileOpener::createStreamFrom("$ 0 0 0"));
+    TuringMachine* nonDeterministic = new TuringMachine(FileOpener::openFile("/Users/boyan/Desktop/Turing/nondeterministicExample.txt"));
+    nonDeterministic->setTape(tape);
+    nonDeterministic->run();
+    delete tape;
+    tape = new Tape(FileOpener::openFile("/Users/boyan/Desktop/Turing/tape.txt"));
+    CHECK(tape->toString() == "$ 1 2 3 $ 1 3 1");
+    delete tape;
+    delete nonDeterministic;
 }
