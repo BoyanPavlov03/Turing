@@ -6,25 +6,12 @@
 #include "Tape.hpp"
 #include "Transition.hpp"
 #include "ComputationHistoryNode.hpp"
-
-struct hash_pair {
-    template <class T1, class T2>
-    size_t operator()(const std::pair<T1, T2>& p) const {
-        auto hash1 = std::hash<T1>{}(p.first);
-        auto hash2 = std::hash<T2>{}(p.second);
-
-        if (hash1 != hash2) {
-            return hash1 ^ hash2;
-        }
-
-        return hash1;
-    }
-};
+#include "HashPair.hpp"
 
 class TuringMachine {
     std::vector<std::string> states;
     std::vector<std::string> alphabet;
-    std::unordered_map<std::pair<std::string, std::string>, std::vector<Transition*>, hash_pair> transitions;
+    std::unordered_map<std::pair<std::string, std::string>, std::vector<Transition*>, HashPair> transitions;
     std::string currentState;
     std::string startState;
     std::string stopState;

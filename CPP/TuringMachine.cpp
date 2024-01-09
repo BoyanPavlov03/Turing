@@ -60,7 +60,7 @@ void TuringMachine::run() {
     if (currentState == "accept") {
         std::cout << "The language representing the turing machine accepts the word from the tape!\n";
     } else if (currentState == "halt") {
-        root->writeToFileAllLeafs("/Users/boyan/Desktop/Turing/outputTape.txt");
+        root->writeToFileAllLeafs("/Users/boyan/Desktop/Turing/Resources/outputTape.txt");
         std::cout << "Turing machine finished successfully!\n";
     } else {
         std::cout << "The language representing the turing machine rejects the word from the tape!\n";
@@ -167,7 +167,7 @@ void TuringMachine::composition(TuringMachine* other) {
             }
         }
     }
-    root->writeToFileAllLeafs("/Users/boyan/Desktop/Turing/outputTape.txt");
+    root->writeToFileAllLeafs("/Users/boyan/Desktop/Turing/Resources/outputTape.txt");
 }
 
 void TuringMachine::runAnotherMachineBasedOnCurrentState(TuringMachine* acceptor, TuringMachine* rejector) {
@@ -213,7 +213,7 @@ void TuringMachine::runWhile(TuringMachine* predicate) {
     ComputationHistoryNode* root = new ComputationHistoryNode(new Tape(*currentTape));
     runWhileHelper(predicate, root);
     std::cout << "Turing machine finished successfully!\n";
-    root->writeToFileAllLeafs("/Users/boyan/Desktop/Turing/outputTape.txt");
+    root->writeToFileAllLeafs("/Users/boyan/Desktop/Turing/Resources/outputTape.txt");
 }
 
 void TuringMachine::runWhileHelper(TuringMachine* predicate, ComputationHistoryNode* root) {
