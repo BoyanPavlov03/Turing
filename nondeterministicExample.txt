@@ -6,6 +6,7 @@ a $ a $ R
 b $ b $ R
 c $ c $ R
 d $ d $ R
+
 a 0 b 1 R
 a 0 c 2 R
 b 0 d 3 R

@@ -3,7 +3,6 @@
 #include <sstream>
 #include <iostream>
 
-
 Tape::Tape(std::ifstream file) {
     std::string line;
     std::getline(file, line);

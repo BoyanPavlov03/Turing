@@ -1,9 +1,10 @@
 #pragma once
 #include <string>
+#include <iostream>
 
 struct Tape {
     std::vector<std::string> tapeContent;
-    unsigned index;
+    unsigned index = 0;
 
     Tape(std::ifstream file);
     Tape(const Tape& other) {

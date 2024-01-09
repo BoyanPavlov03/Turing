@@ -7,6 +7,6 @@ s 0 s 0 R
 s 1 s 1 R
 s _ q _ L
 q 1 q 0 L
-q $ q $ S /Users/boyan/Desktop/Turing/shiftRightBinary.txt
+q $ q $ S shiftRightBinary
 q 0 halt 1 S
 q _ halt 1 S

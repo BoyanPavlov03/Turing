@@ -82,6 +82,18 @@ build CMakeFiles/Turing.dir/Tests/TuringMachineTest.cpp.o: CXX_COMPILER__Turing_
   OBJECT_DIR = CMakeFiles/Turing.dir
   OBJECT_FILE_DIR = CMakeFiles/Turing.dir/Tests
 
+build CMakeFiles/Turing.dir/CPP/ComputationHistoryNode.cpp.o: CXX_COMPILER__Turing_Debug /Users/boyan/Desktop/Turing/CPP/ComputationHistoryNode.cpp || cmake_object_order_depends_target_Turing
+  DEP_FILE = CMakeFiles/Turing.dir/CPP/ComputationHistoryNode.cpp.o.d
+  FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -fcolor-diagnostics -std=gnu++17
+  OBJECT_DIR = CMakeFiles/Turing.dir
+  OBJECT_FILE_DIR = CMakeFiles/Turing.dir/CPP
+
+build CMakeFiles/Turing.dir/CPP/FileOpener.cpp.o: CXX_COMPILER__Turing_Debug /Users/boyan/Desktop/Turing/CPP/FileOpener.cpp || cmake_object_order_depends_target_Turing
+  DEP_FILE = CMakeFiles/Turing.dir/CPP/FileOpener.cpp.o.d
+  FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -fcolor-diagnostics -std=gnu++17
+  OBJECT_DIR = CMakeFiles/Turing.dir
+  OBJECT_FILE_DIR = CMakeFiles/Turing.dir/CPP
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target Turing
@@ -90,7 +102,7 @@ build CMakeFiles/Turing.dir/Tests/TuringMachineTest.cpp.o: CXX_COMPILER__Turing_
 #############################################
 # Link the executable Turing
 
-build Turing: CXX_EXECUTABLE_LINKER__Turing_Debug CMakeFiles/Turing.dir/main.cpp.o CMakeFiles/Turing.dir/CPP/Transition.cpp.o CMakeFiles/Turing.dir/CPP/Tape.cpp.o CMakeFiles/Turing.dir/CPP/TuringMachine.cpp.o CMakeFiles/Turing.dir/Tests/TapeTest.cpp.o CMakeFiles/Turing.dir/Tests/TuringMachineTest.cpp.o
+build Turing: CXX_EXECUTABLE_LINKER__Turing_Debug CMakeFiles/Turing.dir/main.cpp.o CMakeFiles/Turing.dir/CPP/Transition.cpp.o CMakeFiles/Turing.dir/CPP/Tape.cpp.o CMakeFiles/Turing.dir/CPP/TuringMachine.cpp.o CMakeFiles/Turing.dir/Tests/TapeTest.cpp.o CMakeFiles/Turing.dir/Tests/TuringMachineTest.cpp.o CMakeFiles/Turing.dir/CPP/ComputationHistoryNode.cpp.o CMakeFiles/Turing.dir/CPP/FileOpener.cpp.o
   FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5
   OBJECT_DIR = CMakeFiles/Turing.dir
   POST_BUILD = :
