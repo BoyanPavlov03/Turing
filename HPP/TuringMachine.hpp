@@ -1,5 +1,8 @@
 #pragma once
 #include <string>
+#include <vector>
+#include <unordered_map>
+#include <queue>
 #include "Tape.hpp"
 #include "Transition.hpp"
 
@@ -28,7 +31,8 @@ class TuringMachine {
 
     void executeTransition(Transition* transition);
     void executeTransitionsUntilStopState();
-    void clearEmptyTapeNodesAtTheEnd();
+    void removeEmptySymbolsAtTheBack();
+    void addToQueue(std::queue<Transition*>& transitionsToExecute);
 public:
     TuringMachine(std::ifstream file);
     ~TuringMachine();

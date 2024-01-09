@@ -3,21 +3,9 @@
 #include "../HPP/Tape.hpp"
 #include "../HPP/FileOpener.hpp"
 
-TEST_CASE("TapeNode") {
-    TapeNode* node = new TapeNode("a", "a", nullptr, nullptr);
-    CHECK(node->dataForWrite == "a");
-    CHECK(node->tempData == "a");
-    CHECK(node->next == nullptr);
-    CHECK(node->prev == nullptr);
-    delete node;
-}
-
 TEST_CASE("TapeStartingWith$") {
     Tape* tape = new Tape(FileOpener::createStreamFrom("$ 0 0 1"));
-    CHECK(tape->head->dataForWrite == "$");
-    CHECK(tape->head->next->dataForWrite == "0");
-    CHECK(tape->head->next->next->dataForWrite == "0");
-    CHECK(tape->head->next->next->next->dataForWrite == "1");
+    CHECK(tape->toString() == "$ 0 0 1");
     delete tape;
 }
 

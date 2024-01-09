@@ -48,9 +48,13 @@ TuringMachine::~TuringMachine() {
 }
 
 void TuringMachine::run() {
+    if (currentTape == nullptr) {
+        std::cout << "Turing machine does not have a tape to operate on!\n";
+        return;
+    }
     executeTransitionsUntilStopState();
-    clearEmptyTapeNodesAtTheEnd();
-    currentTape->current = currentTape->head;
+    removeEmptySymbolsAtTheBack();
+    currentTape->index = 0;
     if (currentState == "accept")
         std::cout << "The language representing the turing machine accepts the word from the tape!\n";
     else if (currentState == "halt") {
@@ -61,39 +65,40 @@ void TuringMachine::run() {
 }
 
 void TuringMachine::executeTransition(Transition* transition) {
-    currentTape->current->tempData = transition->write;
+    currentTape->tapeContent.at(currentTape->index) = transition->write;
     if (stopState == "halt") {
-        currentTape->current->dataForWrite = transition->write;
+        currentTape->tapeContent.at(currentTape->index) = transition->write;
     }
     currentState = transition->newState;
     switch (transition->command) {
         case LEFT:
-            if (currentTape->current->prev == nullptr)
+            if (currentTape->index == 0)
                 return;
-            currentTape->current = currentTape->current->prev;
+            currentTape->index--;
             break;
         case RIGHT:
-            if (currentTape->current->next == nullptr) {
-                TapeNode* newNode = new TapeNode("_", "_", nullptr, currentTape->current);
-                currentTape->current->next = newNode;
-                currentTape->tail = newNode;
+            if (currentTape->tapeContent.size() == currentTape->index + 1) {
+                currentTape->tapeContent.emplace_back("_");
             }
-            currentTape->current = currentTape->current->next;
+            currentTape->index++;
         case STAY:
             break;
     }
 }
 
-void TuringMachine::executeTransitionsUntilStopState() {
-    currentState = startState;
-    std::queue<Transition*> transitionsToExecute;
-    std::string tapeData = stopState == "accept"
-                           ? currentTape->current->tempData
-                           : currentTape->current->dataForWrite;
-    std::vector<Transition*> currentStateTransitions = transitions.at(std::make_pair(currentState,tapeData));
+void TuringMachine::addToQueue(std::queue<Transition*>& transitionsToExecute) {
+    std::vector<Transition*> currentStateTransitions = transitions.at(std::make_pair(currentState,
+                                                                                     currentTape->tapeContent.at(currentTape->index)));
     for (auto& t : currentStateTransitions) {
         transitionsToExecute.push(t);
     }
+}
+
+void TuringMachine::executeTransitionsUntilStopState() {
+    currentState = startState;
+    std::vector<std::string> tapeBackup = currentTape->tapeContent;
+    std::queue<Transition*> transitionsToExecute;
+    addToQueue(transitionsToExecute);
     while(!transitionsToExecute.empty()) {
         try {
             Transition* transition = transitionsToExecute.front();
@@ -117,42 +122,32 @@ void TuringMachine::executeTransitionsUntilStopState() {
                 break;
             }
 
-            tapeData = stopState == "accept"
-                       ? currentTape->current->tempData
-                       : currentTape->current->dataForWrite;
-            currentStateTransitions = transitions.at(std::make_pair(currentState,tapeData));
-            for (auto& t : currentStateTransitions) {
-                transitionsToExecute.push(t);
-            }
+            addToQueue(transitionsToExecute);
         } catch (std::out_of_range& e) {
             currentState = "reject";
         }
     }
-
-    for (TapeNode* node = currentTape->head; node != nullptr; node = node->next) {
-        node->tempData = node->dataForWrite;
+    if (stopState == "accept") {
+        currentTape->tapeContent = tapeBackup;
     }
 }
 
-void TuringMachine::clearEmptyTapeNodesAtTheEnd() {
-    while (currentTape->tail->dataForWrite == "_") {
-        TapeNode* temp = currentTape->tail;
-        currentTape->tail = currentTape->tail->prev;
-        currentTape->tail->next = nullptr;
-        delete temp;
+void TuringMachine::removeEmptySymbolsAtTheBack() {
+    while (currentTape->tapeContent.back() == "_") {
+        currentTape->tapeContent.pop_back();
     }
 }
 
 void TuringMachine::composition(TuringMachine* other) {
     other->setTape(currentTape);
     other->executeTransitionsUntilStopState();
-    currentTape->current = currentTape->head;
+    currentTape->index = 0;
     run();
 }
 
 void TuringMachine::runAnotherMachineBasedOnCurrentState(TuringMachine* acceptor, TuringMachine* rejector) {
     executeTransitionsUntilStopState();
-    currentTape->current = currentTape->head;
+    currentTape->index = 0;
     if (currentState == "accept") {
         acceptor->setTape(currentTape);
         acceptor->run();
@@ -172,20 +167,20 @@ void TuringMachine::runWhile(TuringMachine* predicate) {
     predicate->setTape(currentTape);
     while(true) {
         predicate->executeTransitionsUntilStopState();
-        currentTape->current = currentTape->head;
+        currentTape->index = 0;
         if (predicate->currentState != "accept") {
             break;
         }
         run();
     }
-    clearEmptyTapeNodesAtTheEnd();
+    removeEmptySymbolsAtTheBack();
 }
 
 void TuringMachine::setTape(Tape* tape) {
-    for (TapeNode* node = tape->head; node != nullptr; node = node->next) {
-        if (node->dataForWrite == "$") continue;
-        if (std::find(alphabet.begin(), alphabet.end(), node->dataForWrite) == alphabet.end()) {
-            std::cout << "Tape symbol: " << node->dataForWrite << " is not in alphabet!\n";
+    for (int i = 0; i < tape->tapeContent.size(); i++) {
+        if (tape->tapeContent.at(i) == "$" && i == 0) continue;
+        if (std::find(alphabet.begin(), alphabet.end(), tape->tapeContent.at(i)) == alphabet.end()) {
+            std::cout << "The tape content is not in the alphabet of the turing machine!\n";
             return;
         }
     }
