@@ -11,4 +11,5 @@ struct ComputationHistoryNode {
 
     ComputationHistoryNode(Tape* tape);
     void writeToFileAllLeafs(const std::string& fileName);
+    void graphVizPrint();
 };

@@ -117,7 +117,7 @@ TEST_CASE("TuringMachine::nondeterministicExample") {
     nonDeterministic->run();
     delete tape;
     tape = new Tape(FileOpener::openFile("outputTape"));
-    CHECK(tape->toString() == "$ 1 2 3 $ 1 3 1");
+    CHECK(tape->toString() == "$ 1 3 1 $ 2 3 1");
     delete tape;
     delete nonDeterministic;
 }

@@ -1,10 +1,9 @@
 # ninja log v5
 36	2854	1704396927079359271	CMakeFiles/Turing.dir/CPP/Tape.cpp.o	f7d7aaa0bb664ad5
-17	2941	1704396399583585831	CMakeFiles/Turing.dir/TapeTest.cpp.o	24b28fff2eab01fb
 2028	2294	1704549346266150532	Turing	9e7eaf97263b7eb0
 22	2028	1704549345990903510	CMakeFiles/Turing.dir/CPP/TuringMachine.cpp.o	bd74adc5e881442
 23	4406	1704536461606846632	CMakeFiles/Turing.dir/Tests/TapeTest.cpp.o	c1539fbc5c815df9
 16	1638	1704396030888764544	CMakeFiles/Turing.dir/main.cpp.o	773012bab8886aa6
 3	7741	1704395792023789119	CMakeFiles/Turing.dir/CPP/Transition.cpp.o	d79d6cd6cee3568f
-1	164	1704828306474393540	build.ninja	e28ac572715ec42c
+1	164	1704830750201831873	build.ninja	e28ac572715ec42c
 26	2158	1704396802335527805	CMakeFiles/Turing.dir/Tests/TuringMachineTest.cpp.o	824d04ffe5024be3

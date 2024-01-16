@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/boyan/Desktop/Turing/cmake-build-debug-coverage"
+			"value" : "/Users/boyan/Downloads/Turing/cmake-build-debug"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -171,7 +171,7 @@
 				}
 			],
 			"type" : "STRING",
-			"value" : "-fprofile-instr-generate -fcoverage-mapping"
+			"value" : ""
 		},
 		{
 			"name" : "CMAKE_CXX_FLAGS_DEBUG",
@@ -267,7 +267,7 @@
 				}
 			],
 			"type" : "STRING",
-			"value" : "-fprofile-instr-generate -fcoverage-mapping"
+			"value" : ""
 		},
 		{
 			"name" : "CMAKE_C_FLAGS_DEBUG",
@@ -479,7 +479,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/boyan/Desktop/Turing/cmake-build-debug-coverage/CMakeFiles/pkgRedirects"
+			"value" : "/Users/boyan/Downloads/Turing/cmake-build-debug/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -539,7 +539,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/boyan/Desktop/Turing"
+			"value" : "/Users/boyan/Downloads/Turing"
 		},
 		{
 			"name" : "CMAKE_INSTALL_NAME_TOOL",
@@ -1111,7 +1111,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/boyan/Desktop/Turing/cmake-build-debug-coverage"
+			"value" : "/Users/boyan/Downloads/Turing/cmake-build-debug"
 		},
 		{
 			"name" : "Turing_IS_TOP_LEVEL",
@@ -1135,7 +1135,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/boyan/Desktop/Turing"
+			"value" : "/Users/boyan/Downloads/Turing"
 		}
 	],
 	"kind" : "cache",
