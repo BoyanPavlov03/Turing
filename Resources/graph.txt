@@ -1,8 +1,9 @@
 digraph G {
-"$ 0 0 0" -> "$ 0 0 0";
-"$ 0 0 0" -> "$ 0 0 0";
-"$ 0 0 0" -> "$ 0 0 0 _";
-"$ 0 0 0 _" -> "$ 0 0 0 _";
-"$ 0 0 0 _" -> "$ 0 0 1";
-"$ 0 0 1" [shape=doublecircle];
+"$ _ 0 1 0" -> "$ _ 0 1 0" [xlabel = "S", minlen = 5];
+"$ _ 0 1 0" -> "$ _ 0 1 0" [xlabel = "L", minlen = 5];
+"$ _ 0 1 0" -> "$ _ 0 1 0" [xlabel = "L", minlen = 5];
+"$ _ 0 1 0" -> "$ _ 0 1 0" [xlabel = "R", minlen = 5];
+"$ _ 0 1 0" -> "$ 0 0 1 0" [xlabel = "S", minlen = 5];
+"$ 0 0 1 0" -> "$ 1 0 1 0" [xlabel = "S", minlen = 5];
+"$ 1 0 1 0" [shape=doublecircle];
 }

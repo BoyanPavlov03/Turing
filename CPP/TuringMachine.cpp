@@ -60,7 +60,7 @@ void TuringMachine::run() {
     if (currentState == "accept") {
         std::cout << "The language representing the turing machine accepts the word from the tape!\n";
     } else if (currentState == "halt") {
-        root->writeToFileAllLeafs("/Users/boyan/Downloads/Turing/Resources/outputTape.txt");
+        root->writeToFileAllLeafs("../Resources/outputTape.txt");
         root->graphVizPrint();
         std::cout << "Turing machine finished successfully!\n";
     } else {
@@ -80,6 +80,7 @@ void TuringMachine::run() {
 }
 
 void TuringMachine::executeTransition(ComputationHistoryNode* root, Transition* transition) {
+    std::cout << root->tape->toString() << "\n";
     if (!transition->helperMachine.empty()) {
         TuringMachine* helperMachine = new TuringMachine(FileOpener::openFile(transition->helperMachine));
         std::string preservedState = root->currentState;
@@ -124,6 +125,7 @@ void TuringMachine::executeTransition(ComputationHistoryNode* root, Transition* 
     ComputationHistoryNode* newNode = new ComputationHistoryNode(tape);
     root->children.emplace_back(newNode);
     newNode->currentState = transition->newState;
+    newNode->command = transition->command;
     if (transition->newState == stopState) {
         currentState = stopState;
         return;
@@ -169,7 +171,7 @@ void TuringMachine::composition(TuringMachine* other) {
             }
         }
     }
-    root->writeToFileAllLeafs("/Users/boyan/Downloads/Turing/Resources/outputTape.txt");
+    root->writeToFileAllLeafs("../Resources/outputTape.txt");
     root->graphVizPrint();
 }
 
@@ -216,7 +218,7 @@ void TuringMachine::runWhile(TuringMachine* predicate) {
     ComputationHistoryNode* root = new ComputationHistoryNode(new Tape(*currentTape));
     runWhileHelper(predicate, root);
     std::cout << "Turing machine finished successfully!\n";
-    root->writeToFileAllLeafs("/Users/boyan/Downloads/Turing/Resources/outputTape.txt");
+    root->writeToFileAllLeafs("../Resources/outputTape.txt");
     root->graphVizPrint();
 }
 

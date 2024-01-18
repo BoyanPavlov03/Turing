@@ -1,7 +1,7 @@
 #include "../HPP/FileOpener.hpp"
 
 std::ifstream FileOpener::openFile(const std::string& fileName) {
-    std::ifstream file("/Users/boyan/Downloads/Turing/Resources/" + fileName + ".txt");
+    std::ifstream file("../Resources/" + fileName + ".txt");
     if (!file.is_open()) {
         throw std::invalid_argument("File not found");
     }

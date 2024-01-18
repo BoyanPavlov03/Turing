@@ -25,18 +25,20 @@ void ComputationHistoryNode::writeToFileAllLeafs(const std::string& fileName) {
 }
 
 void ComputationHistoryNode::graphVizPrint() {
-    std::ofstream out("/Users/boyan/Downloads/Turing/Resources/graph.txt");
+    std::ofstream out("../Resources/graph.txt");
     std::queue<ComputationHistoryNode*> nodes;
     nodes.push(this);
     out << "digraph G {\n";
+    unsigned index = 0;
     while (!nodes.empty()) {
         ComputationHistoryNode *node = nodes.front();
         nodes.pop();
+        std::string nodeTapeString = node->tape->toString();
         if (node->children.empty()) {
-            out << "\"" << node->tape->toString() << "\" [shape=doublecircle];\n";
+            out << "\"" << nodeTapeString << "\" [shape=doublecircle];\n";
         } else {
             for (auto &child: node->children) {
-                out << "\"" << node->tape->toString() << "\" -> \"" << child->tape->toString() << "\";\n";
+                out << "\"" << nodeTapeString << "\" -> \"" << child->tape->toString() << "\" [xlabel = \"" << commandToString(child->command) << "\"];\n";
                 nodes.push(child);
             }
         }
